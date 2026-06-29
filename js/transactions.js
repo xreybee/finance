@@ -7,6 +7,7 @@
   let categoriesList = [];
   let transactionsList = [];
   let compressedReceiptBase64 = "";
+  let _activeDetailId = null; // ID transaksi yang sedang dilihat di detail modal
 
   window.onPageLoad = async function(user) {
     await loadTransactionsData(user);
@@ -120,6 +121,34 @@
     // Struk Viewer Modal
     select("close-modal-receipt-viewer").addEventListener("click", () => select("modal-receipt-viewer").classList.remove("active"));
     select("btn-close-receipt-viewer").addEventListener("click", () => select("modal-receipt-viewer").classList.remove("active"));
+
+    // Detail Transaksi Modal (tombol ✕ close)
+    select("close-modal-transaction-detail").addEventListener("click", () => {
+      select("modal-transaction-detail").classList.remove("active");
+      _activeDetailId = null;
+    });
+
+    // Klik overlay untuk menutup detail modal
+    select("modal-transaction-detail").addEventListener("click", (e) => {
+      if (e.target === select("modal-transaction-detail")) {
+        select("modal-transaction-detail").classList.remove("active");
+        _activeDetailId = null;
+      }
+    });
+
+    // Tombol Edit di detail modal
+    select("btn-detail-edit").addEventListener("click", () => {
+      const id = _activeDetailId;
+      select("modal-transaction-detail").classList.remove("active");
+      if (id) openTransactionModal(id);
+    });
+
+    // Tombol Hapus di detail modal
+    select("btn-detail-delete").addEventListener("click", () => {
+      const id = _activeDetailId;
+      select("modal-transaction-detail").classList.remove("active");
+      if (id) window.deleteTransaction(id);
+    });
   }
 
   // 4. LOGIKA CRUD TRANSAKSI
@@ -331,7 +360,6 @@
   // -------------------------------------------
   // DETAIL MODAL
   // -------------------------------------------
-  let _activeDetailId = null;
 
   function showTransactionDetail(id) {
     const t = transactionsList.find(x => x.id === id);

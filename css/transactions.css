@@ -18,9 +18,14 @@
    ============================================ */
 @media (max-width: 768px) {
 
-  /* Ubah table menjadi block agar tbody bisa di-flex */
+  /* Ubah table menjadi block agar tbody bisa di-flex, sembunyikan overflow */
+  .table-container {
+    overflow-x: hidden;
+  }
+
   .table-container table {
     display: block;
+    width: 100%;
   }
 
   /* Sembunyikan header kolom desktop */
