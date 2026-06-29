@@ -165,11 +165,11 @@
     const path = window.location.pathname;
     let page = "dashboard"; // Default
 
-    if (path.includes("transactions.html")) page = "transactions";
-    else if (path.includes("categories.html")) page = "categories";
-    else if (path.includes("goals.html")) page = "goals";
-    else if (path.includes("evaluation.html")) page = "evaluation";
-    else if (path.includes("profile.html")) page = "profile";
+    if (path.includes("transactions")) page = "transactions";
+    else if (path.includes("categories")) page = "categories";
+    else if (path.includes("goals")) page = "goals";
+    else if (path.includes("evaluation")) page = "evaluation";
+    else if (path.includes("profile")) page = "profile";
 
     // Set class aktif ke menu sidebar & mobile nav
     document.querySelectorAll(".nav-link, .mobile-nav-link").forEach(link => {

@@ -8,3 +8,14 @@ label[for="profile-photo-input"]:hover {
   background-color: var(--white-glass-bg);
   color: var(--aqua-color);
 }
+
+.profile-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .profile-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
