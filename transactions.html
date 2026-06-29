@@ -207,7 +207,8 @@
           </div>
 
           <div class="table-container">
-            <table>
+            <!-- Desktop Table (tersembunyi di mobile via CSS) -->
+            <table id="table-desktop-transactions">
               <thead>
                 <tr>
                   <th>Tanggal</th>
@@ -223,6 +224,12 @@
                 <!-- Data transaksi akan dimuat secara dinamis -->
               </tbody>
             </table>
+
+            <!-- Mobile Card List (tersembunyi di desktop via CSS) -->
+            <div id="transactions-mobile-list" class="transactions-mobile-list">
+              <!-- Card transaksi akan dimuat secara dinamis -->
+            </div>
+
             <div id="transactions-empty-state" style="text-align: center; padding: 40px; display: none;">
               <i class="fa-solid fa-folder-open" style="font-size: 40px; color: var(--text-muted); margin-bottom: 10px;"></i>
               <p style="color: var(--text-secondary);">Tidak ada transaksi yang ditemukan.</p>

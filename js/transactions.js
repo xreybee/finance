@@ -256,106 +256,97 @@
     alertEl.style.display = "flex";
   }
 
-  // 5. RENDER TABEL TRANSAKSI
+  // 5. RENDER TABEL TRANSAKSI (2 container: desktop table + mobile card list)
   function renderTransactionsTable() {
-    const listContainer = select("transactions-list");
-    const emptyState = select("transactions-empty-state");
-    listContainer.innerHTML = "";
-    
+    const tableBody    = select("transactions-list");        // <tbody> desktop
+    const mobileList   = select("transactions-mobile-list"); // <div> mobile cards
+    const emptyState   = select("transactions-empty-state");
+
+    tableBody.innerHTML  = "";
+    mobileList.innerHTML = "";
+
     // Ambil nilai filter
-    const query = select("filter-search").value.toLowerCase();
+    const query     = select("filter-search").value.toLowerCase();
     const typeFilter = select("filter-type").value;
-    const catFilter = select("filter-category").value;
-    const start = select("filter-start-date").value;
-    const end = select("filter-end-date").value;
-    
-    // Filter data transaksi
-    let filteredList = transactionsList.filter(t => {
-      const matchSearch = t.description.toLowerCase().includes(query) || (t.note && t.note.toLowerCase().includes(query));
-      const matchType = typeFilter === "all" || t.type === typeFilter;
-      const matchCat = catFilter === "all" || t.categoryId === catFilter;
-      const matchStart = !start || t.date >= start;
-      const matchEnd = !end || t.date <= end;
-      
-      return matchSearch && matchType && matchCat && matchStart && matchEnd;
-    });
-    
-    // Urutkan transaksi berdasarkan tanggal terbaru
-    filteredList.sort((a, b) => b.date.localeCompare(a.date));
-    
+    const catFilter  = select("filter-category").value;
+    const start      = select("filter-start-date").value;
+    const end        = select("filter-end-date").value;
+
+    // Filter + urutkan
+    const filteredList = transactionsList
+      .filter(t => {
+        const matchSearch = t.description.toLowerCase().includes(query) || (t.note && t.note.toLowerCase().includes(query));
+        const matchType  = typeFilter === "all" || t.type === typeFilter;
+        const matchCat   = catFilter  === "all" || t.categoryId === catFilter;
+        const matchStart = !start || t.date >= start;
+        const matchEnd   = !end   || t.date <= end;
+        return matchSearch && matchType && matchCat && matchStart && matchEnd;
+      })
+      .sort((a, b) => b.date.localeCompare(a.date));
+
     if (filteredList.length === 0) {
       emptyState.style.display = "block";
       return;
     }
     emptyState.style.display = "none";
-    
+
     filteredList.forEach(t => {
-      const cat = categoriesList.find(c => c.id === t.categoryId);
-      const icon = cat ? cat.icon : "fa-tag";
-      const catName = cat ? cat.name : (t.categoryName || 'Kustom');
-      
+      const cat       = categoriesList.find(c => c.id === t.categoryId);
+      const icon      = cat ? cat.icon : "fa-tag";
+      const catName   = cat ? cat.name : (t.categoryName || "Kustom");
       const badgeClass = t.type === "income" ? "badge badge-success" : "badge badge-danger";
-      const badgeText = t.type === "income" ? "Pemasukan" : "Pengeluaran";
+      const badgeText  = t.type === "income" ? "Pemasukan" : "Pengeluaran";
       const amountSign = t.type === "income" ? "+" : "-";
       const amountClass = t.type === "income" ? "amount-income" : "amount-expense";
-      
-      // Tombol struk belanja (desktop)
-      const receiptBtn = t.receiptImage 
-        ? `<button class="btn btn-glass" style="padding: 5px 10px; font-size: 11px;" onclick="viewReceipt('${t.receiptImage}')"><i class="fa-solid fa-receipt"></i> Struk</button>` 
-        : `<span style="color: var(--text-muted); font-size: 11px;">Tidak ada</span>`;
-      
+      const receiptBtn = t.receiptImage
+        ? `<button class="btn btn-glass" style="padding:5px 10px;font-size:11px;" onclick="viewReceipt('${t.receiptImage}')"><i class="fa-solid fa-receipt"></i> Struk</button>`
+        : `<span style="color:var(--text-muted);font-size:11px;">Tidak ada</span>`;
+
+      // ── DESKTOP: baris tabel biasa ──────────────────────────────
       const tr = document.createElement("tr");
-      tr.className = "mobile-card";
-      tr.dataset.id = t.id;
-
       tr.innerHTML = `
-        <!-- MOBILE: Icon cell -->
-        <td class="mc-icon"><i class="fa-solid ${icon}"></i></td>
-        <!-- MOBILE: Main info cell -->
-        <td class="mc-main">
-          <span class="mc-desc">${t.description}</span>
-          <span class="mc-meta">${catName} &bull; ${window.formatIndonesianDate(t.date)}</span>
+        <td>${window.formatIndonesianDate(t.date)}</td>
+        <td>
+          <div style="font-weight:600;">${t.description}</div>
+          ${t.note ? `<div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">${t.note}</div>` : ""}
         </td>
-        <!-- MOBILE: Amount cell -->
-        <td class="mc-amount">
-          <span class="${amountClass}">${amountSign} ${window.formatRupiah(t.amount)}</span>
-          <span class="${badgeClass}" style="font-size: 10px; padding: 3px 8px;">${badgeText}</span>
-        </td>
-
-        <!-- DESKTOP COLUMNS (hidden on mobile via CSS) -->
-        <td data-label="Tanggal">${window.formatIndonesianDate(t.date)}</td>
-        <td data-label="Deskripsi / Catatan">
-          <div style="font-weight: 600;">${t.description}</div>
-          ${t.note ? `<div style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">${t.note}</div>` : ""}
-        </td>
-        <td data-label="Kategori">
-          <span><i class="fa-solid ${icon}"></i> ${catName}</span>
-        </td>
-        <td data-label="Jenis"><span class="${badgeClass}">${badgeText}</span></td>
-        <td data-label="Nominal" class="${amountClass}" style="font-weight: 700;">${amountSign} ${window.formatRupiah(t.amount)}</td>
-        <td data-label="Struk">${receiptBtn}</td>
-        <td data-label="Aksi">
-          <div style="display: flex; gap: 8px;">
-            <button class="btn btn-glass" style="padding: 6px 12px; font-size: 12px; color: var(--aqua-color);" onclick="editTransaction('${t.id}')">
+        <td><span><i class="fa-solid ${icon}"></i> ${catName}</span></td>
+        <td><span class="${badgeClass}">${badgeText}</span></td>
+        <td class="${amountClass}" style="font-weight:700;">${amountSign} ${window.formatRupiah(t.amount)}</td>
+        <td>${receiptBtn}</td>
+        <td>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-glass" style="padding:6px 12px;font-size:12px;color:var(--aqua-color);" onclick="editTransaction('${t.id}')">
               <i class="fa-solid fa-pen-to-square"></i>
             </button>
-            <button class="btn btn-glass" style="padding: 6px 12px; font-size: 12px; color: var(--danger-color);" onclick="deleteTransaction('${t.id}')">
+            <button class="btn btn-glass" style="padding:6px 12px;font-size:12px;color:var(--danger-color);" onclick="deleteTransaction('${t.id}')">
               <i class="fa-solid fa-trash"></i>
             </button>
           </div>
         </td>
       `;
+      tableBody.appendChild(tr);
 
-      // Mobile: klik card untuk lihat detail
-      tr.addEventListener("click", (e) => {
-        // Jangan buka detail kalau yang diklik adalah tombol aksi
-        if (e.target.closest("button")) return;
-        showTransactionDetail(t.id);
-      });
-
-      listContainer.appendChild(tr);
+      // ── MOBILE: card horizontal ──────────────────────────────────
+      const card = document.createElement("div");
+      card.className = "txn-mobile-card";
+      card.innerHTML = `
+        <div class="txn-card-icon"><i class="fa-solid ${icon}"></i></div>
+        <div class="txn-card-info">
+          <span class="txn-card-desc">${t.description}</span>
+          <span class="txn-card-meta">${catName} &bull; ${window.formatIndonesianDate(t.date)}</span>
+        </div>
+        <div class="txn-card-amount">
+          <span class="${amountClass}">${amountSign} ${window.formatRupiah(t.amount)}</span>
+          <span class="${badgeClass}">${badgeText}</span>
+        </div>
+      `;
+      card.addEventListener("click", () => showTransactionDetail(t.id));
+      mobileList.appendChild(card);
     });
   }
+
+
 
   // -------------------------------------------
   // DETAIL MODAL

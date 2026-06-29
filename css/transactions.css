@@ -5,134 +5,116 @@
 }
 
 /* ============================================
-   DESKTOP DEFAULT: Sembunyikan kolom khusus mobile
+   DESKTOP: Tampilkan tabel, sembunyikan mobile list
    ============================================ */
-#transactions-list tr.mobile-card td.mc-icon,
-#transactions-list tr.mobile-card td.mc-main,
-#transactions-list tr.mobile-card td.mc-amount {
+#transactions-mobile-list {
   display: none;
 }
 
 /* ============================================
-   MOBILE: Card horizontal menggantikan tabel
+   MOBILE: Sembunyikan tabel, tampilkan card list
    ============================================ */
 @media (max-width: 768px) {
-
-  /* Ubah table menjadi block agar tbody bisa di-flex, sembunyikan overflow */
-  .table-container {
-    overflow-x: hidden;
+  /* Sembunyikan tabel desktop */
+  #table-desktop-transactions {
+    display: none !important;
   }
 
-  .table-container table {
-    display: block;
-    width: 100%;
-  }
-
-  /* Sembunyikan header kolom desktop */
-  .table-container thead {
-    display: none;
-  }
-
-  /* tbody menjadi flex column berisi card-card */
-  .table-container tbody#transactions-list {
+  /* Tampilkan mobile card list */
+  #transactions-mobile-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
     padding: 4px 0;
   }
-
-  /* Tiap <tr> jadi sebuah card horizontal */
-  #transactions-list tr.mobile-card {
-    display: flex !important;
-    align-items: center;
-    gap: 12px;
-    background: var(--white-glass);
-    border: 1px solid var(--white-glass-border);
-    border-radius: 14px;
-    padding: 12px 14px;
-    cursor: pointer;
-    transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  #transactions-list tr.mobile-card:active,
-  #transactions-list tr.mobile-card:hover {
-    transform: scale(0.98);
-    background: var(--white-glass-hover);
-    box-shadow: 0 4px 16px rgba(13, 71, 161, 0.1);
-  }
-
-  /* Sembunyikan SEMUA <td> di mobile (kolom desktop) */
-  #transactions-list tr.mobile-card td {
-    display: none !important;
-    padding: 0;
-    border: none;
-  }
-
-  /* Tampilkan HANYA 3 kolom mobile */
-  #transactions-list tr.mobile-card td.mc-icon,
-  #transactions-list tr.mobile-card td.mc-main,
-  #transactions-list tr.mobile-card td.mc-amount {
-    display: flex !important;
-    align-items: center;
-    padding: 0;
-    border: none;
-  }
-
-  /* Ikon kategori (lingkaran) */
-  #transactions-list tr.mobile-card td.mc-icon {
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: rgba(13, 71, 161, 0.08);
-    justify-content: center;
-    font-size: 16px;
-    color: var(--primary-color);
-  }
-
-  /* Kolom tengah (deskripsi + kategori + tanggal) */
-  #transactions-list tr.mobile-card td.mc-main {
-    flex: 1;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
-    min-width: 0;
-    overflow: hidden;
-  }
-
-  /* Kolom kanan (nominal + badge) */
-  #transactions-list tr.mobile-card td.mc-amount {
-    flex-shrink: 0;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 4px;
-    font-size: 14px;
-    font-weight: 700;
-  }
 }
 
 /* ============================================
-   TEKS DALAM CARD MOBILE
+   MOBILE CARD STYLES
    ============================================ */
-.mc-desc {
+.txn-mobile-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--white-glass);
+  border: 1px solid var(--white-glass-border);
+  border-radius: 14px;
+  padding: 13px 14px;
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.txn-mobile-card:active,
+.txn-mobile-card:hover {
+  transform: scale(0.98);
+  background: var(--white-glass-hover);
+  box-shadow: 0 4px 16px rgba(13, 71, 161, 0.1);
+}
+
+/* Ikon bulat */
+.txn-card-icon {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(13, 71, 161, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--primary-color);
+}
+
+/* Info tengah */
+.txn-card-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.txn-card-desc {
   font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 180px;
 }
 
-.mc-meta {
+.txn-card-meta {
   font-size: 11px;
   color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 180px;
+}
+
+/* Nominal + badge kanan */
+.txn-card-amount {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.txn-card-amount .amount-income {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.txn-card-amount .amount-expense {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.txn-card-amount .badge {
+  font-size: 10px;
+  padding: 3px 8px;
 }
 
 /* ============================================
@@ -163,11 +145,11 @@
 }
 .detail-amount-income {
   color: var(--success-color);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
 }
 .detail-amount-expense {
   color: var(--danger-color);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
 }
