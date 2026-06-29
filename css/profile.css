@@ -9,11 +9,7 @@ label[for="profile-photo-input"]:hover {
   color: var(--aqua-color);
 }
 
-.profile-grid {
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-}
-
+/* Responsive: stack cards vertically on mobile */
 @media (max-width: 768px) {
   .profile-grid {
     grid-template-columns: 1fr !important;

@@ -165,7 +165,23 @@
     const path = window.location.pathname;
     let page = "dashboard"; // Default
 
-    if (path.includes("transactions")) page = "transactions";
+    // Mendukung URL dengan ekstensi .html (file://) maupun tanpa ekstensi (Vercel/hosting)
+    const segments = path.split("/").filter(Boolean);
+    const lastSegment = (segments[segments.length - 1] || "").replace(".html", "");
+
+    const pageMap = {
+      "transactions": "transactions",
+      "categories": "categories",
+      "goals": "goals",
+      "evaluation": "evaluation",
+      "profile": "profile",
+      "dashboard": "dashboard",
+      "login": "login"
+    };
+
+    if (pageMap[lastSegment]) {
+      page = pageMap[lastSegment];
+    } else if (path.includes("transactions")) page = "transactions";
     else if (path.includes("categories")) page = "categories";
     else if (path.includes("goals")) page = "goals";
     else if (path.includes("evaluation")) page = "evaluation";
