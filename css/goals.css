@@ -1,0 +1,5 @@
+/* css/goals.css */
+/* Kustomisasi gaya spesifik halaman goals (opsional) */
+.goals-grid {
+  animation: fadeIn 0.4s ease-out;
+}

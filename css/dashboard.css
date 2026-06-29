@@ -1,0 +1,5 @@
+/* css/dashboard.css */
+/* Kustomisasi gaya spesifik dashboard (opsional) */
+.stat-card {
+  animation: fadeIn 0.4s ease-out;
+}

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transaksi - Finance</title>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Firebase Compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/transactions.css">
+</head>
+<body>
+
+  <!-- Floating animated bubbles background -->
+  <div class="bubble-background">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+  </div>
+
+  <div class="app-container" id="app-shell">
+    
+    <!-- Collapsible Sidebar (Desktop) -->
+    <aside class="sidebar glass-panel" id="app-sidebar">
+      <button class="toggle-sidebar-btn" id="sidebar-toggle" title="Sembunyikan Sidebar">
+        <i class="fa-solid fa-chevron-left" id="sidebar-toggle-icon"></i>
+      </button>
+      
+      <div>
+        <div class="brand-section">
+          <div class="brand-logo"><i class="fa-solid fa-circle-nodes"></i></div>
+          <div class="brand-name">Finance</div>
+        </div>
+        
+        <ul class="nav-links">
+          <li class="nav-item">
+            <a class="nav-link" data-view="dashboard" href="dashboard.html">
+              <i class="fa-solid fa-chart-pie"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="transactions" href="transactions.html">
+              <i class="fa-solid fa-receipt"></i>
+              <span>Transaksi</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="categories" href="categories.html">
+              <i class="fa-solid fa-tags"></i>
+              <span>Kategori Anggaran</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="goals" href="goals.html">
+              <i class="fa-solid fa-bullseye"></i>
+              <span>Target Tabungan</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="evaluation" href="evaluation.html">
+              <i class="fa-solid fa-chart-line"></i>
+              <span>Evaluasi Keuangan</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="profile" href="profile.html">
+              <i class="fa-solid fa-user-gear"></i>
+              <span>Profil Anda</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="user-profile-section" id="sidebar-profile">
+        <div class="user-avatar" id="avatar-letter">U</div>
+        <div class="user-info">
+          <div class="user-name" id="user-display-name">Memuat...</div>
+          <div class="user-role" id="user-display-email">user@email.com</div>
+        </div>
+        <a href="#" id="btn-logout" title="Keluar" style="margin-left: auto; color: var(--danger-color); font-size: 18px; transition: 0.2s;">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Mobile Navigation Bottom Bar -->
+    <nav class="mobile-nav glass-panel">
+      <ul class="mobile-nav-links">
+        <li>
+          <a class="mobile-nav-link" data-view="dashboard" href="dashboard.html">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="transactions" href="transactions.html">
+            <i class="fa-solid fa-receipt"></i>
+            <span>Transaksi</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="categories" href="categories.html">
+            <i class="fa-solid fa-tags"></i>
+            <span>Kategori</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="goals" href="goals.html">
+            <i class="fa-solid fa-bullseye"></i>
+            <span>Goals</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="evaluation" href="evaluation.html">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Evaluasi</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="profile" href="profile.html">
+            <i class="fa-solid fa-user-gear"></i>
+            <span>Profil</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" id="app-main-content">
+      
+      <!-- Top Bar / Header -->
+      <header class="top-bar">
+        <div class="page-title">
+          <h1 id="page-title-text">Catatan Transaksi</h1>
+        </div>
+        <div class="top-bar-actions">
+          <button class="btn btn-aqua" id="btn-quick-add-transaction">
+            <i class="fa-solid fa-plus"></i> Tambah Transaksi
+          </button>
+        </div>
+      </header>
+
+      <!-- Global Alert Banner -->
+      <div id="global-alert" class="alert-banner" style="display: none;">
+        <span id="global-alert-message">Berhasil!</span>
+        <button class="modal-close-btn" onclick="document.getElementById('global-alert').style.display='none'">&times;</button>
+      </div>
+
+      <!-- TRANSACTIONS VIEW -->
+      <section class="view-section active">
+        <!-- Search & Filter Bar -->
+        <div class="filter-bar glass-panel">
+          <div class="filter-group">
+            <label class="form-label">Cari Transaksi</label>
+            <input type="text" id="filter-search" class="form-control" placeholder="Kata kunci deskripsi...">
+          </div>
+          <div class="filter-group">
+            <label class="form-label">Jenis</label>
+            <select id="filter-type" class="form-control">
+              <option value="all">Semua Jenis</option>
+              <option value="income">Pemasukan</option>
+              <option value="expense">Pengeluaran</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="form-label">Kategori</label>
+            <select id="filter-category" class="form-control">
+              <option value="all">Semua Kategori</option>
+            </select>
+          </div>
+          <div class="filter-group" style="flex: 1.5; min-width: 320px; display: flex; gap: 10px;">
+            <div style="flex: 1;">
+              <label class="form-label">Mulai Tanggal</label>
+              <input type="date" id="filter-start-date" class="form-control">
+            </div>
+            <div style="flex: 1;">
+              <label class="form-label">Sampai Tanggal</label>
+              <input type="date" id="filter-end-date" class="form-control">
+            </div>
+          </div>
+          <div>
+            <button class="btn btn-glass" id="btn-clear-filters" title="Reset Filter">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+            <button class="btn btn-glass" id="btn-export-csv" title="Ekspor ke Excel/CSV">
+              <i class="fa-solid fa-file-excel"></i> Ekspor CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- Transactions Table Card -->
+        <div class="table-card glass-panel">
+          <div class="table-header-row">
+            <h3 class="card-title" style="margin-bottom: 0;"><i class="fa-solid fa-list"></i> Riwayat Pencatatan</h3>
+            <button class="btn btn-aqua" id="btn-add-transaction-main">
+              <i class="fa-solid fa-plus"></i> Catat Baru
+            </button>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Deskripsi / Catatan</th>
+                  <th>Kategori</th>
+                  <th>Jenis</th>
+                  <th>Nominal</th>
+                  <th>Struk</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="transactions-list">
+                <!-- Data transaksi akan dimuat secara dinamis -->
+              </tbody>
+            </table>
+            <div id="transactions-empty-state" style="text-align: center; padding: 40px; display: none;">
+              <i class="fa-solid fa-folder-open" style="font-size: 40px; color: var(--text-muted); margin-bottom: 10px;"></i>
+              <p style="color: var(--text-secondary);">Tidak ada transaksi yang ditemukan.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL: Tambah / Edit Transaksi -->
+  <div id="modal-transaction" class="modal-overlay">
+    <div class="modal-container glass-panel">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-transaction-title">Catat Transaksi Baru</h3>
+        <button class="modal-close-btn" id="close-modal-transaction">&times;</button>
+      </div>
+      <form id="transaction-form">
+        <div id="transaction-alert" class="alert-banner error" style="display: none; margin-bottom: 15px;">
+          <span class="alert-msg"></span>
+        </div>
+        <input type="hidden" id="transaction-id">
+        <div class="form-group">
+          <label class="form-label">Jenis Transaksi</label>
+          <div style="display: flex; gap: 15px;">
+            <label style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--white-glass-border); padding: 12px; border-radius: 10px; cursor: pointer;">
+              <input type="radio" name="trans-type" value="income" checked> Pemasukan
+            </label>
+            <label style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--white-glass-border); padding: 12px; border-radius: 10px; cursor: pointer;">
+              <input type="radio" name="trans-type" value="expense"> Pengeluaran
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nominal Uang (Rp)</label>
+          <input type="number" id="trans-amount" class="form-control" placeholder="Contoh: 50000" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Kategori</label>
+          <select id="trans-category" class="form-control" required>
+            <!-- Opsi Kategori dimuat dinamis -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Deskripsi Singkat</label>
+          <input type="text" id="trans-description" class="form-control" placeholder="Contoh: Beli makan siang" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tanggal Transaksi</label>
+          <input type="date" id="trans-date" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Catatan Tambahan (Opsional)</label>
+          <textarea id="trans-note" class="form-control" placeholder="Detail transaksi..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Lampiran Gambar Struk (Opsional)</label>
+          <input type="file" id="trans-receipt" class="form-control" accept="image/*">
+          <div id="receipt-preview-container" class="receipt-preview-container" style="display: none;">
+            <img id="receipt-preview-img" class="receipt-preview-img" src="" alt="Struk Preview">
+            <button type="button" class="remove-receipt-btn" id="btn-remove-receipt">&times;</button>
+          </div>
+        </div>
+        <div style="display: flex; gap: 15px; margin-top: 25px;">
+          <button type="button" class="btn btn-glass" id="btn-cancel-transaction" style="flex: 1;">Batal</button>
+          <button type="submit" class="btn btn-aqua" style="flex: 1;">Simpan Transaksi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Struk Viewer (Full size view) -->
+  <div id="modal-receipt-viewer" class="modal-overlay">
+    <div class="modal-container glass-panel" style="max-width: 600px; text-align: center;">
+      <div class="modal-header">
+        <h3 class="modal-title">Bukti Struk Transaksi</h3>
+        <button class="modal-close-btn" id="close-modal-receipt-viewer">&times;</button>
+      </div>
+      <img id="receipt-full-img" src="" alt="Struk Penuh" style="max-width: 100%; max-height: 70vh; border-radius: 12px; border: 1px solid var(--white-glass-border); box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+      <div style="margin-top: 20px;">
+        <button class="btn btn-glass" id="btn-close-receipt-viewer" style="width: 100%;">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/firebase-init.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/transactions.js"></script>
+</body>
+</html>

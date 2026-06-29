@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finance - Memuat...</title>
+  <!-- Firebase Compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/global.css">
+  <style>
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      width: 100vw;
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating animated bubbles background -->
+  <div class="bubble-background">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+  </div>
+
+  <div class="loading-container">
+    <div class="loading-spinner"></div>
+    <p style="margin-top: 15px; font-weight: 500; color: var(--text-secondary);">Mempersiapkan data keuangan Anda...</p>
+  </div>
+
+  <script src="js/firebase-init.js"></script>
+  <script>
+    if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark-theme");
+    }
+    // Monitor status autentikasi untuk pengalihan instan
+    const checkAuthInterval = setInterval(() => {
+      if (window.isFirebaseInitialized) {
+        clearInterval(checkAuthInterval);
+        
+        window.auth.onAuthStateChanged((user) => {
+          if (user) {
+            window.location.replace("dashboard.html");
+          } else {
+            window.location.replace("login.html");
+          }
+        });
+      }
+    }, 50);
+
+    // Timeout jika Firebase gagal dimuat
+    setTimeout(() => {
+      clearInterval(checkAuthInterval);
+      if (!window.isFirebaseInitialized) {
+        window.location.replace("login.html#setup");
+      }
+    }, 3000);
+  </script>
+</body>
+</html>

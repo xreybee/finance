@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Finance</title>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js for graphs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <!-- Firebase Compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+  <!-- Floating animated bubbles background -->
+  <div class="bubble-background">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+  </div>
+
+  <div class="app-container" id="app-shell">
+    
+    <!-- Collapsible Sidebar (Desktop) -->
+    <aside class="sidebar glass-panel" id="app-sidebar">
+      <button class="toggle-sidebar-btn" id="sidebar-toggle" title="Sembunyikan Sidebar">
+        <i class="fa-solid fa-chevron-left" id="sidebar-toggle-icon"></i>
+      </button>
+      
+      <div>
+        <div class="brand-section">
+          <div class="brand-logo"><i class="fa-solid fa-circle-nodes"></i></div>
+          <div class="brand-name">Finance</div>
+        </div>
+        
+        <ul class="nav-links">
+          <li class="nav-item">
+            <a class="nav-link" data-view="dashboard" href="dashboard.html">
+              <i class="fa-solid fa-chart-pie"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="transactions" href="transactions.html">
+              <i class="fa-solid fa-receipt"></i>
+              <span>Transaksi</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="categories" href="categories.html">
+              <i class="fa-solid fa-tags"></i>
+              <span>Kategori Anggaran</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="goals" href="goals.html">
+              <i class="fa-solid fa-bullseye"></i>
+              <span>Target Tabungan</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="evaluation" href="evaluation.html">
+              <i class="fa-solid fa-chart-line"></i>
+              <span>Evaluasi Keuangan</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="profile" href="profile.html">
+              <i class="fa-solid fa-user-gear"></i>
+              <span>Profil Anda</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="user-profile-section" id="sidebar-profile">
+        <div class="user-avatar" id="avatar-letter">U</div>
+        <div class="user-info">
+          <div class="user-name" id="user-display-name">Memuat...</div>
+          <div class="user-role" id="user-display-email">user@email.com</div>
+        </div>
+        <a href="#" id="btn-logout" title="Keluar" style="margin-left: auto; color: var(--danger-color); font-size: 18px; transition: 0.2s;">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Mobile Navigation Bottom Bar -->
+    <nav class="mobile-nav glass-panel">
+      <ul class="mobile-nav-links">
+        <li>
+          <a class="mobile-nav-link" data-view="dashboard" href="dashboard.html">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="transactions" href="transactions.html">
+            <i class="fa-solid fa-receipt"></i>
+            <span>Transaksi</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="categories" href="categories.html">
+            <i class="fa-solid fa-tags"></i>
+            <span>Kategori</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="goals" href="goals.html">
+            <i class="fa-solid fa-bullseye"></i>
+            <span>Goals</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="evaluation" href="evaluation.html">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Evaluasi</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="profile" href="profile.html">
+            <i class="fa-solid fa-user-gear"></i>
+            <span>Profil</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" id="app-main-content">
+      
+      <!-- Top Bar / Header -->
+      <header class="top-bar">
+        <div class="page-title">
+          <h1 id="page-title-text">Dashboard Keuangan</h1>
+        </div>
+        <div class="top-bar-actions">
+          <a href="transactions.html" class="btn btn-aqua">
+            <i class="fa-solid fa-plus"></i> Tambah Transaksi
+          </a>
+        </div>
+      </header>
+
+      <!-- Global Alert Banner -->
+      <div id="global-alert" class="alert-banner" style="display: none;">
+        <span id="global-alert-message">Berhasil!</span>
+        <button class="modal-close-btn" onclick="document.getElementById('global-alert').style.display='none'">&times;</button>
+      </div>
+
+      <!-- DASHBOARD VIEW -->
+      <section class="view-section active">
+        <!-- Summary Cards -->
+        <div class="grid-container">
+          <div class="stat-card glass-panel">
+            <div class="stat-header">
+              <span class="stat-title">Saldo Saat Ini</span>
+              <div class="stat-icon primary"><i class="fa-solid fa-wallet"></i></div>
+            </div>
+            <div class="stat-value" id="dashboard-balance">Rp 0</div>
+            <div class="stat-desc" id="dashboard-balance-desc">Total aset bersih Anda</div>
+          </div>
+          <div class="stat-card glass-panel">
+            <div class="stat-header">
+              <span class="stat-title">Pemasukan Bulan Ini</span>
+              <div class="stat-icon success"><i class="fa-solid fa-arrow-trend-up"></i></div>
+            </div>
+            <div class="stat-value" id="dashboard-income">Rp 0</div>
+            <div class="stat-desc" id="dashboard-income-desc">Uang masuk bulan berjalan</div>
+          </div>
+          <div class="stat-card glass-panel">
+            <div class="stat-header">
+              <span class="stat-title">Pengeluaran Bulan Ini</span>
+              <div class="stat-icon danger"><i class="fa-solid fa-arrow-trend-down"></i></div>
+            </div>
+            <div class="stat-value" id="dashboard-expense">Rp 0</div>
+            <div class="stat-desc" id="dashboard-expense-desc">Uang keluar bulan berjalan</div>
+          </div>
+        </div>
+
+        <!-- Dashboard Grid (Chart + Advisor) -->
+        <div class="dashboard-grid">
+          <!-- Chart -->
+          <div class="chart-card glass-panel">
+            <h3 class="card-title"><i class="fa-solid fa-chart-column"></i> Tren Keuangan Bulanan</h3>
+            <div class="chart-container">
+              <canvas id="balanceChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Financial Advisor -->
+          <div class="advisor-card glass-panel">
+            <h3 class="card-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Financial Advisor</h3>
+            <div class="advisor-status good" id="advisor-status-box">
+              <span class="advisor-icon" id="advisor-icon"><i class="fa-solid fa-face-smile"></i></span>
+              <span id="advisor-status-text">Kondisi Keuangan Sehat</span>
+            </div>
+            <div class="advisor-text" id="advisor-recommendations">
+              Memuat analisis pengeluaran Anda... Masukkan pemasukan dan pengeluaran bulan ini agar kami dapat memproses data Anda dengan akurat.
+            </div>
+          </div>
+        </div>
+
+        <!-- Budget Percentage Progress Panel -->
+        <div class="table-card glass-panel" style="margin-bottom: 30px;">
+          <h3 class="card-title"><i class="fa-solid fa-chart-bar"></i> Alokasi Pengeluaran dari Pemasukan Bulan Ini</h3>
+          <div id="dashboard-budget-progress-list">
+            <!-- Dinamis dimuat di JS -->
+            <p style="color: var(--text-secondary); text-align: center; padding: 20px 0;">Belum ada anggaran kategori pengeluaran yang diatur.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="js/firebase-init.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

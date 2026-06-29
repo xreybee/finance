@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Target Tabungan - Finance</title>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Firebase Compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/goals.css">
+</head>
+<body>
+
+  <!-- Floating animated bubbles background -->
+  <div class="bubble-background">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+  </div>
+
+  <div class="app-container" id="app-shell">
+    
+    <!-- Collapsible Sidebar (Desktop) -->
+    <aside class="sidebar glass-panel" id="app-sidebar">
+      <button class="toggle-sidebar-btn" id="sidebar-toggle" title="Sembunyikan Sidebar">
+        <i class="fa-solid fa-chevron-left" id="sidebar-toggle-icon"></i>
+      </button>
+      
+      <div>
+        <div class="brand-section">
+          <div class="brand-logo"><i class="fa-solid fa-circle-nodes"></i></div>
+          <div class="brand-name">Finance</div>
+        </div>
+        
+        <ul class="nav-links">
+          <li class="nav-item">
+            <a class="nav-link" data-view="dashboard" href="dashboard.html">
+              <i class="fa-solid fa-chart-pie"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="transactions" href="transactions.html">
+              <i class="fa-solid fa-receipt"></i>
+              <span>Transaksi</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="categories" href="categories.html">
+              <i class="fa-solid fa-tags"></i>
+              <span>Kategori Anggaran</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="goals" href="goals.html">
+              <i class="fa-solid fa-bullseye"></i>
+              <span>Target Tabungan</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="evaluation" href="evaluation.html">
+              <i class="fa-solid fa-chart-line"></i>
+              <span>Evaluasi Keuangan</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="profile" href="profile.html">
+              <i class="fa-solid fa-user-gear"></i>
+              <span>Profil Anda</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="user-profile-section" id="sidebar-profile">
+        <div class="user-avatar" id="avatar-letter">U</div>
+        <div class="user-info">
+          <div class="user-name" id="user-display-name">Memuat...</div>
+          <div class="user-role" id="user-display-email">user@email.com</div>
+        </div>
+        <a href="#" id="btn-logout" title="Keluar" style="margin-left: auto; color: var(--danger-color); font-size: 18px; transition: 0.2s;">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Mobile Navigation Bottom Bar -->
+    <nav class="mobile-nav glass-panel">
+      <ul class="mobile-nav-links">
+        <li>
+          <a class="mobile-nav-link" data-view="dashboard" href="dashboard.html">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="transactions" href="transactions.html">
+            <i class="fa-solid fa-receipt"></i>
+            <span>Transaksi</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="categories" href="categories.html">
+            <i class="fa-solid fa-tags"></i>
+            <span>Kategori</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="goals" href="goals.html">
+            <i class="fa-solid fa-bullseye"></i>
+            <span>Goals</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="evaluation" href="evaluation.html">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Evaluasi</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="profile" href="profile.html">
+            <i class="fa-solid fa-user-gear"></i>
+            <span>Profil</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" id="app-main-content">
+      
+      <!-- Top Bar / Header -->
+      <header class="top-bar">
+        <div class="page-title">
+          <h1 id="page-title-text">Target Tabungan (Goals)</h1>
+        </div>
+        <div class="top-bar-actions">
+          <button class="btn btn-aqua" id="btn-add-goal">
+            <i class="fa-solid fa-plus"></i> Buat Target Baru
+          </button>
+        </div>
+      </header>
+
+      <!-- Global Alert Banner -->
+      <div id="global-alert" class="alert-banner" style="display: none;">
+        <span id="global-alert-message">Berhasil!</span>
+        <button class="modal-close-btn" onclick="document.getElementById('global-alert').style.display='none'">&times;</button>
+      </div>
+
+      <!-- GOALS VIEW -->
+      <section class="view-section active">
+        <div class="goals-grid" id="goals-grid-list">
+          <!-- Data Goals dimuat secara dinamis -->
+        </div>
+        <div id="goals-empty-state" style="text-align: center; padding: 60px; display: none;" class="glass-panel">
+          <i class="fa-solid fa-bullseye" style="font-size: 50px; color: var(--text-muted); margin-bottom: 15px;"></i>
+          <p style="color: var(--text-secondary); font-size: 16px;">Belum ada target tabungan aktif.</p>
+          <button class="btn btn-aqua" id="btn-add-goal-empty" style="margin-top: 15px;">Buat Target Tabungan Pertama Anda</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL: Tambah / Edit Target Keuangan (Goals) -->
+  <div id="modal-goal" class="modal-overlay">
+    <div class="modal-container glass-panel">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-goal-title">Buat Target Tabungan</h3>
+        <button class="modal-close-btn" id="close-modal-goal">&times;</button>
+      </div>
+      <form id="goal-form">
+        <div id="goal-alert" class="alert-banner error" style="display: none; margin-bottom: 15px;">
+          <span class="alert-msg"></span>
+        </div>
+        <input type="hidden" id="goal-id">
+        <div class="form-group">
+          <label class="form-label">Nama Barang / Target Impian</label>
+          <input type="text" id="goal-name" class="form-control" placeholder="Contoh: Beli HP Baru, Liburan ke Bali" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Jumlah Target Dana (Rp)</label>
+          <input type="number" id="goal-target" class="form-control" placeholder="Contoh: 5000000" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tabungan Awal / Terisi Saat Ini (Rp)</label>
+          <input type="number" id="goal-current" class="form-control" placeholder="Contoh: 500000" value="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tanggal Tenggat Target (Deadline)</label>
+          <input type="date" id="goal-date" class="form-control" required>
+        </div>
+        <div style="display: flex; gap: 15px; margin-top: 25px;">
+          <button type="button" class="btn btn-glass" id="btn-cancel-goal" style="flex: 1;">Batal</button>
+          <button type="submit" class="btn btn-aqua" style="flex: 1;">Simpan Target</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Edit Tabungan Goal (Add Savings) -->
+  <div id="modal-add-savings" class="modal-overlay">
+    <div class="modal-container glass-panel">
+      <div class="modal-header">
+        <h3 class="modal-title">Tambah Tabungan untuk Target</h3>
+        <button class="modal-close-btn" id="close-modal-savings">&times;</button>
+      </div>
+      <form id="savings-form">
+        <div id="savings-alert" class="alert-banner error" style="display: none; margin-bottom: 15px;">
+          <span class="alert-msg"></span>
+        </div>
+        <input type="hidden" id="savings-goal-id">
+        <div class="form-group">
+          <p id="savings-goal-name" style="font-weight: 600; font-size: 16px; margin-bottom: 10px; color: var(--aqua-color);"></p>
+          <p id="savings-goal-remaining" style="font-size: 14px; color: var(--text-secondary); margin-bottom: 20px;"></p>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nominal yang Ditabung (Rp)</label>
+          <input type="number" id="savings-amount" class="form-control" placeholder="Contoh: 100000" required>
+        </div>
+        <div style="display: flex; gap: 15px; margin-top: 25px;">
+          <button type="button" class="btn btn-glass" id="btn-cancel-savings" style="flex: 1;">Batal</button>
+          <button type="submit" class="btn btn-aqua" style="flex: 1;">Menabung</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/firebase-init.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/goals.js"></script>
+</body>
+</html>

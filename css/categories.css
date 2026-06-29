@@ -1,0 +1,5 @@
+/* css/categories.css */
+/* Kustomisasi gaya spesifik halaman kategori (opsional) */
+.category-grid {
+  animation: fadeIn 0.4s ease-out;
+}

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evaluasi Keuangan - Finance</title>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js for graphs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <!-- Firebase Compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/evaluation.css">
+</head>
+<body>
+
+  <!-- Floating animated bubbles background -->
+  <div class="bubble-background">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+  </div>
+
+  <div class="app-container" id="app-shell">
+    
+    <!-- Collapsible Sidebar (Desktop) -->
+    <aside class="sidebar glass-panel" id="app-sidebar">
+      <button class="toggle-sidebar-btn" id="sidebar-toggle" title="Sembunyikan Sidebar">
+        <i class="fa-solid fa-chevron-left" id="sidebar-toggle-icon"></i>
+      </button>
+      
+      <div>
+        <div class="brand-section">
+          <div class="brand-logo"><i class="fa-solid fa-circle-nodes"></i></div>
+          <div class="brand-name">Finance</div>
+        </div>
+        
+        <ul class="nav-links">
+          <li class="nav-item">
+            <a class="nav-link" data-view="dashboard" href="dashboard.html">
+              <i class="fa-solid fa-chart-pie"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="transactions" href="transactions.html">
+              <i class="fa-solid fa-receipt"></i>
+              <span>Transaksi</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="categories" href="categories.html">
+              <i class="fa-solid fa-tags"></i>
+              <span>Kategori Anggaran</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="goals" href="goals.html">
+              <i class="fa-solid fa-bullseye"></i>
+              <span>Target Tabungan</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" data-view="evaluation" href="evaluation.html">
+              <i class="fa-solid fa-chart-line"></i>
+              <span>Evaluasi Keuangan</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-view="profile" href="profile.html">
+              <i class="fa-solid fa-user-gear"></i>
+              <span>Profil Anda</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="user-profile-section" id="sidebar-profile">
+        <div class="user-avatar" id="avatar-letter">U</div>
+        <div class="user-info">
+          <div class="user-name" id="user-display-name">Memuat...</div>
+          <div class="user-role" id="user-display-email">user@email.com</div>
+        </div>
+        <a href="#" id="btn-logout" title="Keluar" style="margin-left: auto; color: var(--danger-color); font-size: 18px; transition: 0.2s;">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Mobile Navigation Bottom Bar -->
+    <nav class="mobile-nav glass-panel">
+      <ul class="mobile-nav-links">
+        <li>
+          <a class="mobile-nav-link" data-view="dashboard" href="dashboard.html">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="transactions" href="transactions.html">
+            <i class="fa-solid fa-receipt"></i>
+            <span>Transaksi</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="categories" href="categories.html">
+            <i class="fa-solid fa-tags"></i>
+            <span>Kategori</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="goals" href="goals.html">
+            <i class="fa-solid fa-bullseye"></i>
+            <span>Goals</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link active" data-view="evaluation" href="evaluation.html">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Evaluasi</span>
+          </a>
+        </li>
+        <li>
+          <a class="mobile-nav-link" data-view="profile" href="profile.html">
+            <i class="fa-solid fa-user-gear"></i>
+            <span>Profil</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="main-content" id="app-main-content">
+      <header class="top-bar">
+        <div class="page-title">
+          <h1 id="page-title-text">Evaluasi Keuangan</h1>
+        </div>
+        <div class="top-bar-actions">
+          <button id="btn-profile-logout-top" class="btn btn-glass" style="color: var(--danger-color); display: none;">
+            <i class="fa-solid fa-right-from-bracket"></i> Keluar
+          </button>
+        </div>
+      </header>
+
+      <!-- EVALUATION VIEW -->
+      <section class="view-section active">
+        <!-- Rata-rata Score & Status Card -->
+        <div class="grid-container eval-grid">
+          
+          <!-- Skor Kesehatan Keuangan -->
+          <div class="stat-card glass-panel eval-card-score">
+            <h3 class="card-title"><i class="fa-solid fa-heart-pulse"></i> Skor Kesehatan</h3>
+            
+            <div class="score-circle-container">
+              <svg width="140" height="140" viewBox="0 0 140 140">
+                <circle cx="70" cy="70" r="58" fill="none" stroke="rgba(13, 71, 161, 0.08)" stroke-width="12"></circle>
+                <circle id="score-ring" class="score-ring-circle" cx="70" cy="70" r="58" fill="none" stroke="var(--primary-color)" stroke-width="12" stroke-dasharray="364.4" stroke-dashoffset="364.4" stroke-linecap="round"></circle>
+              </svg>
+              <div id="score-text" class="score-number">0</div>
+            </div>
+            
+            <span id="health-status-badge" class="badge health-badge">Memuat...</span>
+            <p id="health-description" class="health-desc-text"></p>
+          </div>
+
+          <!-- Rata-rata Finansial Bulanan -->
+          <div class="stat-card glass-panel eval-card-avg">
+            <div>
+              <h3 class="card-title"><i class="fa-solid fa-calculator"></i> Rata-rata Finansial</h3>
+              
+              <div class="avg-item-row">
+                <div class="avg-item-meta">
+                  <div class="avg-item-icon success"><i class="fa-solid fa-arrow-down-long"></i></div>
+                  <div>
+                    <div class="avg-item-title">RATA-RATA PEMASUKAN</div>
+                    <div class="avg-item-subtitle">Per bulan aktif</div>
+                  </div>
+                </div>
+                <div id="avg-income" class="stat-value avg-item-value">Rp 0</div>
+              </div>
+              
+              <div class="avg-item-row">
+                <div class="avg-item-meta">
+                  <div class="avg-item-icon danger"><i class="fa-solid fa-arrow-up-long"></i></div>
+                  <div>
+                    <div class="avg-item-title">RATA-RATA PENGELUARAN</div>
+                    <div class="avg-item-subtitle">Per bulan aktif</div>
+                  </div>
+                </div>
+                <div id="avg-expense" class="stat-value avg-item-value">Rp 0</div>
+              </div>
+            </div>
+
+            <div class="savings-rate-row">
+              <div>
+                <div class="savings-rate-label">Rasio Sisa Pendapatan (Savings Rate)</div>
+                <div id="savings-rate-desc" class="savings-rate-sublabel">Memuat...</div>
+              </div>
+              <div id="avg-savings-rate" class="stat-value savings-rate-value">0%</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Alokasi Realitas vs Teori Budgeting -->
+        <div class="grid-container eval-full-grid">
+          <div class="stat-card glass-panel eval-card-padding">
+            <h3 class="card-title"><i class="fa-solid fa-scale-unbalanced-flip"></i> Realitas vs Rekomendasi Alokasi (Metode 50/30/20)</h3>
+            
+            <p class="health-desc-text" style="margin-bottom: 25px;">
+              Metode budgeting sehat universal merekomendasikan pembagian pendapatan bulanan menjadi 3 pos utama: <strong>50% Kebutuhan Pokok</strong> (Belanja, Tagihan, Cicilan wajib), <strong>30% Keinginan</strong> (Hiburan, Hobi, Makan mewah), dan <strong>20% Tabungan/Investasi/Dana Darurat</strong>. Berikut adalah proporsi keuangan Anda dari seluruh transaksi:
+            </p>
+
+            <div class="allocation-list">
+              <!-- Kebutuhan Pokok (Needs) -->
+              <div>
+                <div class="alloc-item-header">
+                  <span class="alloc-item-title"><i class="fa-solid fa-house-chimney"></i> Kebutuhan Pokok (Target: Maks 50%)</span>
+                  <span class="alloc-item-pct"><span id="real-needs-pct">0%</span> <span class="alloc-item-target">vs 50%</span></span>
+                </div>
+                <div class="alloc-progress-bg">
+                  <div id="real-needs-bar" class="alloc-progress-fill"></div>
+                </div>
+              </div>
+
+              <!-- Keinginan (Wants) -->
+              <div>
+                <div class="alloc-item-header">
+                  <span class="alloc-item-title"><i class="fa-solid fa-gamepad"></i> Keinginan & Hiburan (Target: Maks 30%)</span>
+                  <span class="alloc-item-pct"><span id="real-wants-pct">0%</span> <span class="alloc-item-target">vs 30%</span></span>
+                </div>
+                <div class="alloc-progress-bg">
+                  <div id="real-wants-bar" class="alloc-progress-fill"></div>
+                </div>
+              </div>
+
+              <!-- Tabungan (Savings) -->
+              <div>
+                <div class="alloc-item-header">
+                  <span class="alloc-item-title"><i class="fa-solid fa-vault"></i> Tabungan & Investasi (Target: Min 20%)</span>
+                  <span class="alloc-item-pct"><span id="real-savings-pct">0%</span> <span class="alloc-item-target">vs 20%</span></span>
+                </div>
+                <div class="alloc-progress-bg">
+                  <div id="real-savings-bar" class="alloc-progress-fill"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rata-rata Transaksi per Kategori -->
+        <div class="grid-container eval-full-grid">
+          <div class="stat-card glass-panel eval-card-padding">
+            <h3 class="card-title"><i class="fa-solid fa-chart-simple"></i> Rata-rata Transaksi per Kategori</h3>
+            
+            <p class="health-desc-text" style="margin-bottom: 20px;">
+              Berikut adalah rata-rata nominal uang dari setiap transaksi yang Anda catat pada masing-masing kategori pengeluaran dan pemasukan:
+            </p>
+
+            <div id="category-average-list" class="cat-avg-grid">
+              <!-- Akan diisi secara dinamis oleh JS -->
+              <div style="text-align: center; color: var(--text-secondary); font-size: 13.5px; padding: 20px; width: 100%;">
+                Menganalisis rata-rata kategori...
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Refleksi Diri & Saran Pintar -->
+        <div class="grid-container eval-full-grid">
+          <div class="stat-card glass-panel eval-card-padding eval-card-margin-bottom">
+            <h3 class="card-title"><i class="fa-solid fa-lightbulb"></i> Rekomendasi & Saran Refleksi Diri</h3>
+            
+            <div id="advice-list" class="advice-container">
+              <!-- Saran dinamis diisi oleh JS -->
+              <div class="advice-card">
+                <div class="advice-icon-box" style="color: var(--primary-color);"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                <div class="advice-info">
+                  <h4 class="advice-title">Menganalisis riwayat transaksi...</h4>
+                  <p class="advice-text">Mohon tunggu, sistem sedang memetakan alur keluar masuk dana Anda.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/firebase-init.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/evaluation.js"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+/* css/login.css */
+/* Kustomisasi gaya untuk halaman login (opsional) */
+.auth-wrapper {
+  animation: fadeIn 0.5s ease-out;
+}

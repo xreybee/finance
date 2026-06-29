@@ -1,0 +1,305 @@
+/* css/evaluation.css */
+/* Kustomisasi gaya untuk halaman evaluasi keuangan */
+
+/* Grid and Card Layout overrides */
+.eval-grid {
+  grid-template-columns: 1.2fr 1.8fr !important;
+}
+
+@media (max-width: 992px) {
+  .eval-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.eval-card-score {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 20px;
+  height: 100%;
+}
+
+.eval-card-avg {
+  padding: 24px 30px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+/* Circular Health Score */
+.score-circle-container {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.score-circle-container svg {
+  transform: rotate(-90deg);
+}
+
+.score-ring-circle {
+  transition: stroke-dashoffset 1s ease-out;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+.score-number {
+  position: absolute;
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.health-badge {
+  font-size: 14px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.health-desc-text {
+  margin-top: 15px;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Average rows styling */
+.avg-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--white-glass-border);
+}
+
+.avg-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avg-item-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avg-item-title {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.avg-item-subtitle {
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+
+.avg-item-value {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.savings-rate-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+}
+
+.savings-rate-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.savings-rate-sublabel {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.savings-rate-value {
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0;
+  color: var(--primary-color);
+}
+
+/* 50/30/20 Budgeting Rules styling */
+.allocation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.alloc-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.alloc-item-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.alloc-item-pct {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.alloc-item-target {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.alloc-progress-bg {
+  height: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--white-glass-border);
+}
+
+.alloc-progress-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 10px;
+  transition: width 0.8s ease-out;
+}
+
+/* Category Average items */
+.cat-avg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.category-avg-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--white-glass);
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--white-glass-border);
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed), background var(--transition-speed);
+}
+
+.category-avg-item:hover {
+  transform: translateY(-2px);
+  background: var(--white-glass-hover);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.cat-avg-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cat-avg-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.cat-avg-name {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.cat-avg-count {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.cat-avg-amount-box {
+  text-align: right;
+}
+
+.cat-avg-amount {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.cat-avg-type {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Advice cards styling */
+.advice-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.advice-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  background: var(--white-glass);
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--white-glass-border);
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed), background var(--transition-speed);
+}
+
+.advice-card:hover {
+  transform: translateY(-2px);
+  background: var(--white-glass-hover) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.advice-icon-box {
+  font-size: 20px;
+}
+
+.advice-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.advice-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+}
+
+.advice-text {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: 1fr !important;
+  }
+}

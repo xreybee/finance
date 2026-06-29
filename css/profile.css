@@ -1,0 +1,10 @@
+/* css/profile.css */
+/* Gaya khusus untuk foto profil & input file */
+#profile-photo-input {
+  display: none;
+}
+label[for="profile-photo-input"]:hover {
+  transform: scale(1.1);
+  background-color: var(--white-glass-bg);
+  color: var(--aqua-color);
+}
