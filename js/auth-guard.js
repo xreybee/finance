@@ -117,14 +117,15 @@
       const themeBtn = document.createElement("button");
       themeBtn.id = "btn-theme-toggle";
       themeBtn.className = "btn btn-glass";
-      themeBtn.style.marginRight = "10px";
-      themeBtn.style.padding = "8px 14px";
-      themeBtn.style.fontSize = "14px";
+      // Remove inline style so CSS controls sizing (cleaner responsive)
+      themeBtn.style.marginRight = "";
+      themeBtn.style.padding = "";
+      themeBtn.style.fontSize = "";
       
       const currentTheme = localStorage.getItem("theme") || "light";
       themeBtn.innerHTML = currentTheme === "dark" 
-        ? '<i class="fa-solid fa-sun"></i> Mode Terang' 
-        : '<i class="fa-solid fa-moon"></i> Mode Gelap';
+        ? '<i class="fa-solid fa-sun"></i><span class="btn-label-text"> Mode Terang</span>' 
+        : '<i class="fa-solid fa-moon"></i><span class="btn-label-text"> Mode Gelap</span>';
         
       topBarActions.prepend(themeBtn);
       
@@ -132,10 +133,10 @@
         const isDark = document.body.classList.toggle("dark-theme");
         if (isDark) {
           localStorage.setItem("theme", "dark");
-          themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i> Mode Terang';
+          themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i><span class="btn-label-text"> Mode Terang</span>';
         } else {
           localStorage.setItem("theme", "light");
-          themeBtn.innerHTML = '<i class="fa-solid fa-moon"></i> Mode Gelap';
+          themeBtn.innerHTML = '<i class="fa-solid fa-moon"></i><span class="btn-label-text"> Mode Gelap</span>';
         }
         
         // Pemicu event custom jika Chart.js ingin menggambar ulang warnanya

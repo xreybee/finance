@@ -263,26 +263,44 @@
     filteredList.forEach(t => {
       const cat = categoriesList.find(c => c.id === t.categoryId);
       const icon = cat ? cat.icon : "fa-tag";
+      const catName = cat ? cat.name : (t.categoryName || 'Kustom');
       
       const badgeClass = t.type === "income" ? "badge badge-success" : "badge badge-danger";
       const badgeText = t.type === "income" ? "Pemasukan" : "Pengeluaran";
       const amountSign = t.type === "income" ? "+" : "-";
       const amountClass = t.type === "income" ? "amount-income" : "amount-expense";
       
-      // Tombol struk belanja
+      // Tombol struk belanja (desktop)
       const receiptBtn = t.receiptImage 
         ? `<button class="btn btn-glass" style="padding: 5px 10px; font-size: 11px;" onclick="viewReceipt('${t.receiptImage}')"><i class="fa-solid fa-receipt"></i> Struk</button>` 
         : `<span style="color: var(--text-muted); font-size: 11px;">Tidak ada</span>`;
       
       const tr = document.createElement("tr");
+      tr.className = "mobile-card";
+      tr.dataset.id = t.id;
+
       tr.innerHTML = `
+        <!-- MOBILE: Icon cell -->
+        <td class="mc-icon"><i class="fa-solid ${icon}"></i></td>
+        <!-- MOBILE: Main info cell -->
+        <td class="mc-main">
+          <span class="mc-desc">${t.description}</span>
+          <span class="mc-meta">${catName} &bull; ${window.formatIndonesianDate(t.date)}</span>
+        </td>
+        <!-- MOBILE: Amount cell -->
+        <td class="mc-amount">
+          <span class="${amountClass}">${amountSign} ${window.formatRupiah(t.amount)}</span>
+          <span class="${badgeClass}" style="font-size: 10px; padding: 3px 8px;">${badgeText}</span>
+        </td>
+
+        <!-- DESKTOP COLUMNS (hidden on mobile via CSS) -->
         <td data-label="Tanggal">${window.formatIndonesianDate(t.date)}</td>
         <td data-label="Deskripsi / Catatan">
           <div style="font-weight: 600;">${t.description}</div>
           ${t.note ? `<div style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">${t.note}</div>` : ""}
         </td>
         <td data-label="Kategori">
-          <span><i class="fa-solid ${icon}"></i> ${t.categoryName || 'Kustom'}</span>
+          <span><i class="fa-solid ${icon}"></i> ${catName}</span>
         </td>
         <td data-label="Jenis"><span class="${badgeClass}">${badgeText}</span></td>
         <td data-label="Nominal" class="${amountClass}" style="font-weight: 700;">${amountSign} ${window.formatRupiah(t.amount)}</td>
@@ -298,9 +316,66 @@
           </div>
         </td>
       `;
+
+      // Mobile: klik card untuk lihat detail
+      tr.addEventListener("click", (e) => {
+        // Jangan buka detail kalau yang diklik adalah tombol aksi
+        if (e.target.closest("button")) return;
+        showTransactionDetail(t.id);
+      });
+
       listContainer.appendChild(tr);
     });
   }
+
+  // -------------------------------------------
+  // DETAIL MODAL
+  // -------------------------------------------
+  let _activeDetailId = null;
+
+  function showTransactionDetail(id) {
+    const t = transactionsList.find(x => x.id === id);
+    if (!t) return;
+    _activeDetailId = id;
+
+    const cat = categoriesList.find(c => c.id === t.categoryId);
+    const catName = cat ? cat.name : (t.categoryName || 'Kustom');
+    const icon = cat ? cat.icon : "fa-tag";
+    const amountSign = t.type === "income" ? "+" : "-";
+    const amountClass = t.type === "income" ? "detail-amount-income" : "detail-amount-expense";
+    const badgeClass = t.type === "income" ? "badge badge-success" : "badge badge-danger";
+    const badgeText = t.type === "income" ? "Pemasukan" : "Pengeluaran";
+
+    const receiptSection = t.receiptImage
+      ? `<div class="detail-row">
+           <span class="detail-label">Struk</span>
+           <button class="btn btn-glass" style="padding: 5px 14px; font-size: 12px;" onclick="viewReceipt('${t.receiptImage}')"><i class="fa-solid fa-receipt"></i> Lihat Struk</button>
+         </div>`
+      : "";
+
+    const noteSection = t.note
+      ? `<div class="detail-row"><span class="detail-label">Catatan</span><span class="detail-value">${t.note}</span></div>`
+      : "";
+
+    const body = select("transaction-detail-body");
+    body.innerHTML = `
+      <div style="text-align: center; padding: 10px 0 18px;">
+        <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(13,71,161,0.08); display: inline-flex; align-items: center; justify-content: center; font-size: 22px; color: var(--primary-color); margin-bottom: 10px;">
+          <i class="fa-solid ${icon}"></i>
+        </div>
+        <div class="${amountClass}">${amountSign} ${window.formatRupiah(t.amount)}</div>
+        <span class="${badgeClass}" style="margin-top: 6px;">${badgeText}</span>
+      </div>
+      <div class="detail-row"><span class="detail-label">Deskripsi</span><span class="detail-value">${t.description}</span></div>
+      <div class="detail-row"><span class="detail-label">Kategori</span><span class="detail-value"><i class="fa-solid ${icon}"></i> ${catName}</span></div>
+      <div class="detail-row"><span class="detail-label">Tanggal</span><span class="detail-value">${window.formatIndonesianDate(t.date)}</span></div>
+      ${noteSection}
+      ${receiptSection}
+    `;
+
+    select("modal-transaction-detail").classList.add("active");
+  }
+
 
   // 6. EDIT, HAPUS, & DETAIL RECEIPT GLOBAL ACTIONS (Expose ke window)
   window.editTransaction = function(id) {

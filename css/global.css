@@ -1083,12 +1083,37 @@ textarea.form-control {
   }
   
   .page-title h1 {
-    font-size: 22px;
+    font-size: 20px;
   }
-  
+
+  /* Top-bar shrink on mobile */
+  .top-bar {
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .top-bar-actions {
+    gap: 8px;
+  }
+
+  /* Tombol di headbar lebih kecil di mobile */
   .top-bar-actions .btn {
-    padding: 8px 14px;
-    font-size: 13px;
+    padding: 7px 11px;
+    font-size: 12px;
+    gap: 5px;
+  }
+
+  /* Sembunyikan label teks tombol "Mode Gelap / Terang" di mobile, tampilkan hanya icon */
+  .top-bar-actions .btn .btn-label-text {
+    display: none;
+  }
+
+  /* Tombol aksi dalam card/table juga lebih kecil */
+  .btn-glass[style*="padding: 6px 12px"] {
+    padding: 5px 8px !important;
+    font-size: 11px !important;
   }
   
   /* Compact cards on mobile */

@@ -144,7 +144,7 @@
         </div>
         <div class="top-bar-actions">
           <button class="btn btn-aqua" id="btn-quick-add-transaction">
-            <i class="fa-solid fa-plus"></i> Tambah Transaksi
+            <i class="fa-solid fa-plus"></i> <span class="btn-label-text">Tambah Transaksi</span>
           </button>
         </div>
       </header>
@@ -305,6 +305,23 @@
       <img id="receipt-full-img" src="" alt="Struk Penuh" style="max-width: 100%; max-height: 70vh; border-radius: 12px; border: 1px solid var(--white-glass-border); box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
       <div style="margin-top: 20px;">
         <button class="btn btn-glass" id="btn-close-receipt-viewer" style="width: 100%;">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Detail Transaksi (Mobile tap-to-view) -->
+  <div id="modal-transaction-detail" class="modal-overlay">
+    <div class="modal-container glass-panel" style="max-width: 460px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Detail Transaksi</h3>
+        <button class="modal-close-btn" id="close-modal-transaction-detail">&times;</button>
+      </div>
+      <div id="transaction-detail-body" style="padding-top: 8px;">
+        <!-- Konten detail diisi secara dinamis oleh JS -->
+      </div>
+      <div style="display: flex; gap: 12px; margin-top: 20px;">
+        <button class="btn btn-glass" id="btn-detail-edit" style="flex: 1;"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+        <button class="btn btn-glass" id="btn-detail-delete" style="flex: 1; color: var(--danger-color);"><i class="fa-solid fa-trash"></i> Hapus</button>
       </div>
     </div>
   </div>
