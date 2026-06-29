@@ -5,25 +5,37 @@
 }
 
 /* ============================================
+   DESKTOP: Sembunyikan kolom mobile dari tabel
+   ============================================ */
+
+/* Kolom khusus mobile harus SELALU tersembunyi di desktop */
+#transactions-list tr.mobile-card td.mc-icon,
+#transactions-list tr.mobile-card td.mc-main,
+#transactions-list tr.mobile-card td.mc-amount {
+  display: none;
+}
+
+/* ============================================
    MOBILE HORIZONTAL TRANSACTION CARD
    ============================================ */
 @media (max-width: 768px) {
 
-  /* Sembunyikan tabel di mobile */
-  .table-container table {
+  /* Sembunyikan thead dan kolom desktop, tampilkan tbody sebagai flex list */
+  .table-container thead {
     display: none;
   }
 
-  /* Tampilkan list card di mobile */
+  /* tbody menjadi flex column berisi card-card */
   #transactions-list {
     display: flex !important;
     flex-direction: column;
     gap: 10px;
+    padding: 4px 0;
   }
 
   /* Tiap <tr> jadi sebuah card horizontal */
   #transactions-list tr.mobile-card {
-    display: flex;
+    display: flex !important;
     align-items: center;
     gap: 12px;
     background: var(--white-glass);
@@ -43,19 +55,21 @@
     box-shadow: 0 4px 16px rgba(13, 71, 161, 0.1);
   }
 
-  /* Sembunyikan semua <td> default */
+  /* Sembunyikan SEMUA <td> di mobile (termasuk kolom desktop) */
   #transactions-list tr.mobile-card td {
-    display: none;
+    display: none !important;
     padding: 0;
     border: none;
   }
 
-  /* Tampilkan hanya td yang kita inginkan */
+  /* Tampilkan HANYA tiga kolom mobile */
   #transactions-list tr.mobile-card td.mc-icon,
   #transactions-list tr.mobile-card td.mc-main,
   #transactions-list tr.mobile-card td.mc-amount {
-    display: flex;
+    display: flex !important;
     align-items: center;
+    padding: 0;
+    border: none;
   }
 
   /* Ikon kategori (lingkaran) */
@@ -77,21 +91,7 @@
     align-items: flex-start;
     gap: 2px;
     min-width: 0;
-  }
-
-  .mc-desc {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary);
-    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-  }
-
-  .mc-meta {
-    font-size: 11px;
-    color: var(--text-muted);
   }
 
   /* Kolom kanan (nominal) */
@@ -105,7 +105,25 @@
   }
 }
 
-/* Detail Modal row styling */
+/* Teks deskripsi di card mobile */
+.mc-desc {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.mc-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ============================================
+   DETAIL MODAL ROW STYLING
+   ============================================ */
 .detail-row {
   display: flex;
   justify-content: space-between;
