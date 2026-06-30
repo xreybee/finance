@@ -157,8 +157,13 @@
 
       <!-- TRANSACTIONS VIEW -->
       <section class="view-section active">
+        <!-- Button untuk toggle filter di Mobile -->
+        <button class="btn btn-glass" id="btn-toggle-filters-mobile" style="display: none; width: 100%; justify-content: center; margin-bottom: 16px; gap: 8px; font-weight: 600; padding: 10px 16px; border-radius: 12px;">
+          <i class="fa-solid fa-filter"></i> <span>Tampilkan Filter &amp; Pencarian</span>
+        </button>
+
         <!-- Search & Filter Bar -->
-        <div class="filter-bar glass-panel">
+        <div class="filter-bar glass-panel" id="filter-bar-panel">
           <div class="filter-group">
             <label class="form-label">Cari Transaksi</label>
             <input type="text" id="filter-search" class="form-control" placeholder="Kata kunci deskripsi...">
@@ -177,7 +182,7 @@
               <option value="all">Semua Kategori</option>
             </select>
           </div>
-          <div class="filter-group" style="flex: 1.5; min-width: 320px; display: flex; gap: 10px;">
+          <div class="filter-group date-range-group" style="flex: 1.5; display: flex; gap: 10px;">
             <div style="flex: 1;">
               <label class="form-label">Mulai Tanggal</label>
               <input type="date" id="filter-start-date" class="form-control">

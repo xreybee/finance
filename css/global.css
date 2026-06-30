@@ -1207,11 +1207,20 @@ textarea.form-control {
   }
   
   /* Compact Grid Filters on Mobile to save vertical space */
+  #btn-toggle-filters-mobile {
+    display: flex !important;
+  }
+  
   .filter-bar {
-    display: grid;
+    display: none !important; /* Hidden by default on mobile */
     grid-template-columns: 1fr 1fr;
     gap: 12px;
     padding: 16px;
+  }
+
+  .filter-bar.active {
+    display: grid !important; /* Visible when toggle button is clicked */
+    animation: slideDown 0.3s ease-out;
   }
   
   .filter-group:nth-child(1) {
@@ -1236,6 +1245,17 @@ textarea.form-control {
     justify-content: flex-end;
     gap: 10px;
     margin-top: 5px;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   
   .modal-container {

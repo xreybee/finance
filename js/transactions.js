@@ -83,6 +83,26 @@
     select("close-modal-transaction").addEventListener("click", closeTransactionModal);
     select("btn-cancel-transaction").addEventListener("click", closeTransactionModal);
 
+    // Toggle Filter Mobile
+    const toggleFiltersMobileBtn = select("btn-toggle-filters-mobile");
+    if (toggleFiltersMobileBtn) {
+      toggleFiltersMobileBtn.addEventListener("click", () => {
+        const filterPanel = select("filter-bar-panel");
+        if (filterPanel) {
+          const isActive = filterPanel.classList.toggle("active");
+          const btnSpan = toggleFiltersMobileBtn.querySelector("span");
+          const btnIcon = toggleFiltersMobileBtn.querySelector("i");
+          if (isActive) {
+            btnSpan.textContent = "Sembunyikan Filter & Pencarian";
+            btnIcon.className = "fa-solid fa-filter-circle-xmark";
+          } else {
+            btnSpan.textContent = "Tampilkan Filter & Pencarian";
+            btnIcon.className = "fa-solid fa-filter";
+          }
+        }
+      });
+    }
+
     // Filter perubahan
     select("filter-search").addEventListener("input", renderTransactionsTable);
     select("filter-type").addEventListener("change", renderTransactionsTable);
